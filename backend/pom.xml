@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>miun.se</groupId>
-    <artifactId>weather_app</artifactId>
+    <artifactId>restaurang</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>weather_app</name>
+    <name>restaurang</name>
     <packaging>war</packaging>
 
     <properties>
