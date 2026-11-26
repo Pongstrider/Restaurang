@@ -1,0 +1,30 @@
+﻿# --- Java & Maven / Gradle Build Outputs ---
+*.class
+*.jar
+*.war
+*.ear
+target/
+build/
+.gradle/
+out/
+
+# --- IntelliJ IDEA ---
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# --- Android Studio ---
+local.properties
+*.apk
+*.aab
+*.ap_
+*.dex
+captures/
+.externalNativeBuild/
+.cxx/
+
+# --- Operating System & Logs ---
+.DS_Store
+Thumbs.db
+*.log

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="jakarta.faces.core"
+      xmlns:h="jakarta.faces.html">
+<f:view>
+  <h:head>
+    <title>MariaDB Message App</title>
+  </h:head>
+  <h:body>
+    <h2>Add a Message</h2>
+
+    <h:form>
+      <h:outputLabel for="msgInput" value="Message: " />
+      <h:inputText id="msgInput" value="#{messagelister.newMsg}" />
+      <h:commandButton value="Save" action="#{messagelister.save}" />
+    </h:form>
+
+    <h3>Message List from Database:</h3>
+    <h:dataTable value="#{messagelister.messages}" var="m" border="1">
+      <h:column>
+        <f:facet name="header">ID</f:facet>
+        #{m.id}
+      </h:column>
+      <h:column>
+        <f:facet name="header">Message Content</f:facet>
+        #{m.msg}
+      </h:column>
+    </h:dataTable>
+  </h:body>
+</f:view>
+</html>
