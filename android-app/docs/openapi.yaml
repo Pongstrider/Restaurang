@@ -1,0 +1,376 @@
+openapi: 3.0.3
+info:
+  title: Schema Storgatan API
+  description: REST-API för personalschema-appen på Storgatan. Byggs i Jakarta EE på Payara.
+  version: "1.0"
+
+servers:
+  - url: http://localhost:8080/schema/api
+    description: Lokal utvecklingsserver
+
+security:
+  - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Employee:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+          enum: [KOK, SERVERING, KASSA]
+      required: [id, name, role]
+
+    Shift:
+      type: object
+      properties:
+        id:
+          type: string
+        date:
+          type: string
+          format: date
+          example: "2026-12-01"
+        type:
+          type: string
+          enum: [LUNCH, MIDDAG]
+        start:
+          type: string
+          example: "16:00"
+        end:
+          type: string
+          example: "23:00"
+        role:
+          type: string
+          enum: [KOK, SERVERING, KASSA]
+        employeeId:
+          type: string
+        status:
+          type: string
+          enum: [ASSIGNED, RELEASED, SWAPPED]
+        releaseReason:
+          type: string
+          nullable: true
+        releasedBy:
+          $ref: "#/components/schemas/Employee"
+          nullable: true
+        releasedAt:
+          type: string
+          format: date-time
+          nullable: true
+        releasedTo:
+          type: string
+          enum: [ALL_SAME_ROLE, COLLEAGUE]
+          nullable: true
+        releasedToEmployeeId:
+          type: string
+          nullable: true
+        coworkers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Employee"
+      required: [id, date, type, start, end, role, employeeId, status]
+
+    SwapRequest:
+      type: object
+      properties:
+        id:
+          type: string
+        shift:
+          $ref: "#/components/schemas/Shift"
+        from:
+          $ref: "#/components/schemas/Employee"
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, shift, from, createdAt]
+
+    Notification:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [SWAP_REQUEST, SHIFT_TAKEN, SWAP_ACCEPTED, SWAP_DECLINED, SHIFT_RELEASED, INFO]
+        title:
+          type: string
+        body:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        read:
+          type: boolean
+        swapId:
+          type: string
+          nullable: true
+      required: [id, type, title, body, createdAt, read]
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required: [email, password]
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        employee:
+          $ref: "#/components/schemas/Employee"
+      required: [token, employee]
+
+    ReleaseRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+          nullable: true
+        visibleTo:
+          type: string
+          enum: [ALL_SAME_ROLE, COLLEAGUE]
+        employeeId:
+          type: string
+          nullable: true
+          description: Obligatoriskt om visibleTo = COLLEAGUE
+      required: [visibleTo]
+
+    DeviceTokenRequest:
+      type: object
+      properties:
+        fcmToken:
+          type: string
+      required: [fcmToken]
+
+paths:
+  /auth/login:
+    post:
+      summary: Logga in
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Lyckad inloggning
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "401":
+          description: Fel e-post eller lösenord
+
+  /me/shifts:
+    get:
+      summary: Mina kommande pass
+      responses:
+        "200":
+          description: Lista av pass
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Shift"
+
+  /shifts/{id}:
+    get:
+      summary: Passdetalj inkl. kollegor
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Passet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Shift"
+        "404":
+          description: Passet finns inte
+
+  /shifts/{id}/release:
+    post:
+      summary: Lägg ut pass
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReleaseRequest"
+      responses:
+        "200":
+          description: Passet är utlagt
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Shift"
+        "409":
+          description: Passet är redan utlagt eller inte ditt
+
+  /shifts/{id}/unrelease:
+    post:
+      summary: Ångra utlagt pass
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Utläggningen ångrades
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Shift"
+        "409":
+          description: Någon har redan tagit passet
+
+  /shifts/released:
+    get:
+      summary: Lediga pass jag kan ta
+      responses:
+        "200":
+          description: Lista av lediga pass
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Shift"
+
+  /shifts/{id}/claim:
+    post:
+      summary: Ta ett pass
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Passet är taget
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Shift"
+        "409":
+          description: Krock med befintligt pass eller passet redan taget
+
+  /swaps/incoming:
+    get:
+      summary: Bytesförfrågningar till mig
+      responses:
+        "200":
+          description: Lista av förfrågningar
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SwapRequest"
+
+  /swaps/{id}/accept:
+    post:
+      summary: Acceptera bytesförfrågan
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Passet är taget
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Shift"
+        "409":
+          description: Förfrågan gäller inte längre
+
+  /swaps/{id}/decline:
+    post:
+      summary: Avböj bytesförfrågan
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Förfrågan avböjd
+
+  /me/notifications:
+    get:
+      summary: Mina notiser
+      responses:
+        "200":
+          description: Lista av notiser
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+
+  /me/notifications/read:
+    post:
+      summary: Markera notiser som lästa
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+              required: [ids]
+      responses:
+        "200":
+          description: Notiserna markerades som lästa
+
+  /me/device-token:
+    post:
+      summary: Registrera FCM-token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeviceTokenRequest"
+      responses:
+        "200":
+          description: Token registrerad
