@@ -1,4 +1,4 @@
-package miun.se.weather_app;
+package miun.se.restaurang;
 
 import java.io.*;
 
