@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="Theme.Demo1" parent="Theme.AppCompat.DayNight.NoActionBar" />
+    <!-- Själva temat ligger i Compose (ui/theme). Detta är bara fönstret innan Compose ritat. -->
+    <style name="Theme.Schema" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:statusBarColor">@color/background</item>
+        <item name="android:navigationBarColor">@color/background</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
 </resources>

@@ -22,6 +22,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "demo1"
+rootProject.name = "Schemaappen"
 include(":app")
  

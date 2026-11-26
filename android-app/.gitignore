@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Gradle-wrappern ska checkas in trots att roten ignorerar *.jar
+!gradle/wrapper/gradle-wrapper.jar
