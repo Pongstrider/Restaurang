@@ -16,8 +16,8 @@ interface SchemaApi {
     @GET("shifts/{id}")
     suspend fun shift(@Path("id") id: String): ShiftDto
 
-    @GET("shifts/{id}/colleagues")
-    suspend fun colleagues(@Path("id") shiftId: String): List<EmployeeDto>
+    @GET("colleagues")
+    suspend fun colleagues(): List<EmployeeDto>
 
     @POST("shifts/{id}/release")
     suspend fun release(@Path("id") id: String, @Body body: ReleaseRequest): ShiftDto

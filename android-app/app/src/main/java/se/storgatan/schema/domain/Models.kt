@@ -4,12 +4,9 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 
-enum class Role { KOK, SERVERING, KASSA }
-
 data class Employee(
     val id: String,
     val name: String,
-    val role: Role,
 )
 
 enum class ShiftType { LUNCH, MIDDAG }
@@ -18,8 +15,8 @@ enum class ShiftStatus { ASSIGNED, RELEASED, SWAPPED }
 
 /** Vem ett utlagt pass är synligt för. */
 sealed interface ReleaseTarget {
-    /** Alla som kan passets roll. */
-    data object AllSameRole : ReleaseTarget
+    /** Alla kollegor. */
+    data object All : ReleaseTarget
 
     /** En viss kollega – blir en bytesförfrågan hos henne/honom. */
     data class Colleague(val employeeId: String) : ReleaseTarget
@@ -31,7 +28,6 @@ data class Shift(
     val type: ShiftType,
     val start: LocalTime,
     val end: LocalTime,
-    val role: Role,
     /** Den som har passet just nu. Ett utlagt pass är fortfarande ägarens tills någon tar det. */
     val employeeId: String,
     val status: ShiftStatus,

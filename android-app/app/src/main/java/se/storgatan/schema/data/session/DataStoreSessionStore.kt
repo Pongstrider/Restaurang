@@ -13,7 +13,6 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import se.storgatan.schema.domain.Employee
-import se.storgatan.schema.domain.Role
 
 private val Context.dataStore by preferencesDataStore(name = "session")
 
@@ -58,10 +57,10 @@ class DataStoreSessionStore(
     }
 
     @Serializable
-    private data class StoredEmployee(val id: String, val name: String, val role: String) {
-        fun toDomain() = Employee(id, name, Role.valueOf(role))
+    private data class StoredEmployee(val id: String, val name: String) {
+        fun toDomain() = Employee(id, name)
         companion object {
-            fun from(e: Employee) = StoredEmployee(e.id, e.name, e.role.name)
+            fun from(e: Employee) = StoredEmployee(e.id, e.name)
         }
     }
 }

@@ -85,12 +85,6 @@ fun NextShiftCard(shift: Shift, onClick: () -> Unit) {
                     style = MaterialTheme.typography.bodyLarge,
                     color = AccentLight,
                 )
-                Spacer(Modifier.width(8.dp))
-                Text(
-                    ShiftFormat.role(shift.role),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = AccentLight.copy(alpha = 0.7f),
-                )
             }
             if (shift.coworkers.isNotEmpty()) {
                 Spacer(Modifier.height(12.dp))
@@ -148,7 +142,7 @@ fun ShiftListCard(shift: Shift, onClick: () -> Unit) {
                 )
                 Spacer(Modifier.height(2.dp))
                 Text(
-                    "${ShiftFormat.type(shift.type)} ${ShiftFormat.time(shift.start, shift.end)}  ·  ${ShiftFormat.role(shift.role)}",
+                    "${ShiftFormat.type(shift.type)} ${ShiftFormat.time(shift.start, shift.end)}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

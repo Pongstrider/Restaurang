@@ -15,7 +15,7 @@ class ShiftConflictsTest {
             ShiftType.LUNCH -> LocalTime.of(10, 0) to LocalTime.of(15, 0)
             ShiftType.MIDDAG -> LocalTime.of(16, 0) to LocalTime.of(23, 0)
         }
-        return Shift(id, LocalDate.of(2026, 12, day), type, start, end, Role.SERVERING, "e-erik", status)
+        return Shift(id, LocalDate.of(2026, 12, day), type, start, end, "e-erik", status)
     }
 
     private val mine = listOf(

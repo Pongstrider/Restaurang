@@ -4,7 +4,6 @@ import se.storgatan.schema.domain.Employee
 import se.storgatan.schema.domain.Notification
 import se.storgatan.schema.domain.NotificationType
 import se.storgatan.schema.domain.ReleaseTarget
-import se.storgatan.schema.domain.Role
 import se.storgatan.schema.domain.Shift
 import se.storgatan.schema.domain.ShiftStatus
 import se.storgatan.schema.domain.ShiftType
@@ -16,20 +15,20 @@ import java.time.ZoneId
 import se.storgatan.schema.domain.ShiftFormat
 
 /**
- * Testdata: vecka 49, 30 nov–6 dec 2026. Inloggad användare är Erik (servering).
+ * Testdata: vecka 49, 30 nov–6 dec 2026. Inloggad användare är Erik.
  * Logga in med erik@storgatan.se / storgatan (alla anställda fungerar: <förnamn>@storgatan.se).
  */
 object FakeData {
     const val PASSWORD = "storgatan"
     val ZONE: ZoneId = ShiftFormat.ZONE
 
-    val erik = Employee("e-erik", "Erik", Role.SERVERING)
-    val sara = Employee("e-sara", "Sara", Role.KOK)
-    val lina = Employee("e-lina", "Lina", Role.KOK)
-    val omar = Employee("e-omar", "Omar", Role.KOK)
-    val maja = Employee("e-maja", "Maja", Role.SERVERING)
-    val johan = Employee("e-johan", "Johan", Role.KASSA)
-    val elin = Employee("e-elin", "Elin", Role.KOK)
+    val erik = Employee("e-erik", "Erik")
+    val sara = Employee("e-sara", "Sara")
+    val lina = Employee("e-lina", "Lina")
+    val omar = Employee("e-omar", "Omar")
+    val maja = Employee("e-maja", "Maja")
+    val johan = Employee("e-johan", "Johan")
+    val elin = Employee("e-elin", "Elin")
 
     /** Anders är chef och byter inga pass, men får notiser (via backend). */
     const val MANAGER_ID = "e-anders"
@@ -47,16 +46,16 @@ object FakeData {
     fun at(day: Int, month: Int, hour: Int, minute: Int): Instant =
         LocalDateTime.of(2026, month, day, hour, minute).atZone(ZONE).toInstant()
 
-    private fun lunch(id: String, date: LocalDate, who: Employee, role: Role = who.role) =
-        Shift(id, date, ShiftType.LUNCH, lunchStart, lunchEnd, role, who.id, ShiftStatus.ASSIGNED)
+    private fun lunch(id: String, date: LocalDate, who: Employee) =
+        Shift(id, date, ShiftType.LUNCH, lunchStart, lunchEnd, who.id, ShiftStatus.ASSIGNED)
 
-    private fun dinner(id: String, date: LocalDate, who: Employee, role: Role = who.role) =
-        Shift(id, date, ShiftType.MIDDAG, dinnerStart, dinnerEnd, role, who.id, ShiftStatus.ASSIGNED)
+    private fun dinner(id: String, date: LocalDate, who: Employee) =
+        Shift(id, date, ShiftType.MIDDAG, dinnerStart, dinnerEnd, who.id, ShiftStatus.ASSIGNED)
 
     fun shifts(): List<Shift> = listOf(
         // Eriks pass
         dinner("p-101", d(1), erik),
-        lunch("p-102", d(2), erik, Role.KASSA),
+        lunch("p-102", d(2), erik),
         dinner("p-103", d(4), erik),
         dinner("p-104", d(5), erik),
 
@@ -126,7 +125,7 @@ object FakeData {
         reason: String,
         by: Employee,
         at: Instant,
-        to: ReleaseTarget = ReleaseTarget.AllSameRole,
+        to: ReleaseTarget = ReleaseTarget.All,
     ) = copy(
         status = ShiftStatus.RELEASED,
         releaseReason = reason,

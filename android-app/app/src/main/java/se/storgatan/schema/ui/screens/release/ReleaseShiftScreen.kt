@@ -81,7 +81,7 @@ fun ReleaseShiftScreen(
                 Column(Modifier.padding(horizontal = 20.dp)) {
                     Text(ShiftFormat.longDate(shift.date), style = MaterialTheme.typography.headlineSmall)
                     Text(
-                        "${ShiftFormat.type(shift.type)} ${ShiftFormat.time(shift.start, shift.end)}  ·  ${ShiftFormat.role(shift.role)}",
+                        "${ShiftFormat.type(shift.type)} ${ShiftFormat.time(shift.start, shift.end)}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = TextMuted,
                     )
@@ -121,7 +121,7 @@ fun ReleaseShiftScreen(
                                 colors = RadioButtonDefaults.colors(selectedColor = Accent),
                             )
                             Text(
-                                "Alla som kan ${ShiftFormat.role(shift.role).lowercase()}",
+                                "Alla kollegor",
                                 style = MaterialTheme.typography.bodyLarge,
                             )
                         }

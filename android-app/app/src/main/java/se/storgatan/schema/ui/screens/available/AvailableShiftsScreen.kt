@@ -135,7 +135,7 @@ private fun AvailableShiftCard(
                 Column(Modifier.weight(1f)) {
                     Text(ShiftFormat.longDate(shift.date), style = MaterialTheme.typography.titleSmall)
                     Text(
-                        "${ShiftFormat.type(shift.type)} ${ShiftFormat.time(shift.start, shift.end)}  ·  ${ShiftFormat.role(shift.role)}",
+                        "${ShiftFormat.type(shift.type)} ${ShiftFormat.time(shift.start, shift.end)}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = TextMuted,
                     )

@@ -73,7 +73,7 @@ class FakeRepositoryTest {
     fun `lägga ut och ångra syns direkt i mina pass`() = runTest {
         loginAsErik()
         val before = repo.changes.value
-        repo.release("p-101", "  Sjuk  ", ReleaseTarget.AllSameRole)
+        repo.release("p-101", "  Sjuk  ", ReleaseTarget.All)
         val released = repo.myShifts().first { it.id == "p-101" }
         assertEquals(ShiftStatus.RELEASED, released.status)
         assertEquals("Sjuk", released.releaseReason)

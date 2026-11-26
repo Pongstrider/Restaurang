@@ -12,7 +12,6 @@ import se.storgatan.schema.domain.NetworkException
 import se.storgatan.schema.domain.NotFoundException
 import se.storgatan.schema.domain.Notification
 import se.storgatan.schema.domain.ReleaseTarget
-import se.storgatan.schema.domain.Role
 import se.storgatan.schema.domain.ServerException
 import se.storgatan.schema.domain.Shift
 import se.storgatan.schema.domain.ShiftConflictException
@@ -57,13 +56,13 @@ class RemoteShiftRepository(
         api.shift(id).toDomain()
     }
 
-    override suspend fun colleagues(role: Role): List<Employee> = apiCall {
-        api.colleagues(role.name).map { it.toDomain() }
+    override suspend fun colleagues(): List<Employee> = apiCall {
+        api.colleagues().map { it.toDomain() }
     }
 
     override suspend fun release(shiftId: String, reason: String?, target: ReleaseTarget): Shift = mutate {
         val body = when (target) {
-            ReleaseTarget.AllSameRole -> ReleaseRequest(reason = reason, visibleTo = "ALL_SAME_ROLE")
+            ReleaseTarget.All -> ReleaseRequest(reason = reason, visibleTo = "ALL")
             is ReleaseTarget.Colleague -> ReleaseRequest(reason = reason, visibleTo = "COLLEAGUE", employeeId = target.employeeId)
         }
         api.release(shiftId, body).toDomain()

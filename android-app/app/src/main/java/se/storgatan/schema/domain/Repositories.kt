@@ -28,8 +28,8 @@ interface ShiftRepository {
 
     suspend fun shift(id: String): Shift
 
-    /** Kollegor med en viss roll (inte jag själv), för "En viss kollega". */
-    suspend fun colleagues(role: Role): List<Employee>
+    /** Övriga anställda (inte jag själv), för "En viss kollega". */
+    suspend fun colleagues(): List<Employee>
 
     suspend fun release(shiftId: String, reason: String?, target: ReleaseTarget): Shift
 

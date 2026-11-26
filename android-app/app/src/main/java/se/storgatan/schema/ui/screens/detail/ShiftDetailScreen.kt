@@ -104,7 +104,7 @@ fun ShiftDetailScreen(
                     }
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        "${ShiftFormat.time(shift.start, shift.end)}  ·  ${ShiftFormat.role(shift.role)}",
+                        ShiftFormat.time(shift.start, shift.end),
                         style = MaterialTheme.typography.bodyLarge,
                         color = TextMuted,
                     )
@@ -129,7 +129,7 @@ fun ShiftDetailScreen(
                                         shape = MaterialTheme.shapes.small,
                                     ) {
                                         Text(
-                                            "${cw.name} · ${ShiftFormat.role(cw.role)}",
+                                            cw.name,
                                             style = MaterialTheme.typography.bodyMedium,
                                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                                         )

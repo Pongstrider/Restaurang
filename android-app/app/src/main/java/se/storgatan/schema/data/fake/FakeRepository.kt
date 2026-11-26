@@ -14,7 +14,6 @@ import se.storgatan.schema.domain.NotFoundException
 import se.storgatan.schema.domain.Notification
 import se.storgatan.schema.domain.NotificationType
 import se.storgatan.schema.domain.ReleaseTarget
-import se.storgatan.schema.domain.Role
 import se.storgatan.schema.domain.Shift
 import se.storgatan.schema.domain.ShiftConflictException
 import se.storgatan.schema.domain.ShiftConflicts
@@ -74,8 +73,8 @@ class FakeRepository(
 
     override suspend fun shift(id: String): Shift = call { findShift(id).withCoworkers() }
 
-    override suspend fun colleagues(role: Role): List<Employee> = call { me ->
-        FakeData.employees.filter { it.role == role && it.id != me.id }
+    override suspend fun colleagues(): List<Employee> = call { me ->
+        FakeData.employees.filter { it.id != me.id }
     }
 
     override suspend fun release(shiftId: String, reason: String?, target: ReleaseTarget): Shift = mutate { me ->
@@ -101,8 +100,8 @@ class FakeRepository(
                 describe(updated) + (updated.releaseReason?.let { " \"$it\"" } ?: ""),
                 swapId = FakeData.swapIdFor(updated.id),
             )
-            ReleaseTarget.AllSameRole -> employees.values
-                .filter { it.role == updated.role && it.id != me.id }
+            ReleaseTarget.All -> employees.values
+                .filter { it.id != me.id }
                 .forEach { notify(it.id, NotificationType.SHIFT_RELEASED, "Nytt ledigt pass", "${me.name} har lagt ut ${describe(updated)}.") }
         }
         updated.withCoworkers()
@@ -210,7 +209,7 @@ class FakeRepository(
     }
 
     private fun Shift.isVisibleTo(me: Employee): Boolean = when (val to = releasedTo) {
-        ReleaseTarget.AllSameRole, null -> true
+        ReleaseTarget.All, null -> true
         is ReleaseTarget.Colleague -> to.employeeId == me.id
     }
 

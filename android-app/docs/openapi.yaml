@@ -26,10 +26,7 @@ components:
           type: string
         name:
           type: string
-        role:
-          type: string
-          enum: [KOK, SERVERING, KASSA]
-      required: [id, name, role]
+      required: [id, name]
 
     Shift:
       type: object
@@ -49,9 +46,6 @@ components:
         end:
           type: string
           example: "23:00"
-        role:
-          type: string
-          enum: [KOK, SERVERING, KASSA]
         employeeId:
           type: string
         status:
@@ -69,7 +63,7 @@ components:
           nullable: true
         releasedTo:
           type: string
-          enum: [ALL_SAME_ROLE, COLLEAGUE]
+          enum: [ALL, COLLEAGUE]
           nullable: true
         releasedToEmployeeId:
           type: string
@@ -78,7 +72,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Employee"
-      required: [id, date, type, start, end, role, employeeId, status]
+      required: [id, date, type, start, end, employeeId, status]
 
     SwapRequest:
       type: object
@@ -142,7 +136,7 @@ components:
           nullable: true
         visibleTo:
           type: string
-          enum: [ALL_SAME_ROLE, COLLEAGUE]
+          enum: [ALL, COLLEAGUE]
         employeeId:
           type: string
           nullable: true

@@ -46,12 +46,6 @@ object ShiftFormat {
 
     private fun clock(t: LocalTime): String = if (t.minute == 0) "${t.hour}" else "${t.hour}.%02d".format(t.minute)
 
-    /** "Servering" */
-    fun role(role: Role): String = when (role) {
-        Role.KOK -> "Kök"
-        Role.SERVERING -> "Servering"
-        Role.KASSA -> "Kassa"
-    }
 
     /** "tis 1 dec, middag 16–23" */
     fun describe(shift: Shift): String =

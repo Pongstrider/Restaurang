@@ -45,7 +45,7 @@ class ReleaseShiftViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val shift = shiftRepository.shift(route.shiftId)
-                val colleagues = shiftRepository.colleagues(shift.role)
+                val colleagues = shiftRepository.colleagues()
                 _state.update { it.copy(shift = shift, colleagues = colleagues, isLoading = false) }
             } catch (e: Exception) {
                 _state.update { it.copy(isLoading = false, error = e.userMessage()) }
@@ -60,7 +60,7 @@ class ReleaseShiftViewModel @Inject constructor(
     fun release() {
         val current = _state.value
         val target = if (current.targetAll) {
-            ReleaseTarget.AllSameRole
+            ReleaseTarget.All
         } else {
             val c = current.selectedColleague ?: return
             ReleaseTarget.Colleague(c.id)
